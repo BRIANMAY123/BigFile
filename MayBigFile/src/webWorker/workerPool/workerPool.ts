@@ -12,6 +12,7 @@ abstract class WorkerPool {
   }
 
   exec(params: ArrayBuffer[]) {
+    //debugger
     const workerParams = params.map((param, index) => {
       return {
         data: param,
@@ -19,13 +20,16 @@ abstract class WorkerPool {
       };
     });
     return new Promise((rs) => {
+    //debugger
       this.currentRunningCount.subscribe((count) => {
-        if (count < this.maxWorkerCount && this.pool.length !== 0) {
+        //debugger
+        if (count < this.maxWorkerCount && workerParams.length !== 0) {
           let currTaskCount = this.maxWorkerCount - count;
           if (currTaskCount > params.length) {
             currTaskCount = params.length;
           }
           const canUseWorker: WorkerWrapper[] = [];
+          //debugger
           for (const worker of this.pool) {
             if ((worker.status = StatusEnum.WAITING)) {
               canUseWorker.push(worker);
@@ -34,8 +38,25 @@ abstract class WorkerPool {
               }
             }
           }
+          const paramsToRun = workerParams.splice(0, currTaskCount)
+          this.currentRunningCount.next(this.currentRunningCount.value+currTaskCount)
+          canUseWorker.forEach((worker,index)=>{
+            const param=paramsToRun[index];
+            worker.run(param.data,params,param.index).then((res)=>{
+              this.results[index]=res;
+            }).catch((err)=>{
+              this.results[index]=err;
+            }).finally(()=>{
+              this.currentRunningCount.next(this.currentRunningCount.value-1);
+            })  
+          })
+        }
+        if(this.currentRunningCount.value<=0&&workerParams.length===0){
+          rs(this.results);
         }
       });
     });
   }
 }
+
+export { WorkerPool };

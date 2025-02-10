@@ -2,6 +2,8 @@ import { useRef } from "react";
 import { CHUNK_SIZE } from "../constant"
 import { httpPost } from "../http/axios"
 import { useDrag } from "../hook/useDrag"
+import './file.scss'
+import { WorkerService } from "../webWorker/workerService";
 
 const File=()=>{
     const uploadRef=useRef(null);
@@ -43,7 +45,19 @@ const File=()=>{
     }
     
     const uploadFile=async()=>{
-        const chunks=sliceFileChunk(selectedFile as File);
+        //debugger
+        const chunks=await sliceFileChunk(selectedFile as File);
+        //debugger
+        const workerPool=new WorkerService();
+         let res1= await getArrayBufferFromBlob(chunks);
+        // debugger
+        const a=await workerPool.getMd5WorkerPool(res1)
+        //console.log(a);
+        
+        // getArrayBufferFromBlob(chunks).then((res)=>{
+        //     workerPool.getMd5WorkerPool(res)
+        // })
+        debugger
         const requests=chunks.map((chunk,index)=>{
             return createRequest(chunk)
         });
@@ -60,7 +74,8 @@ const File=()=>{
 
     return(
         <div>
-            <div className="uploadContainer" ref={uploadRef}></div>
+            <div className="uploadContainer" ref={uploadRef}>111111111</div>
+            <button onClick={uploadFile}>上传</button>
         </div>
     )
 }
