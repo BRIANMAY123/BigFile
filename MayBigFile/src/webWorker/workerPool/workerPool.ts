@@ -31,27 +31,34 @@ abstract class WorkerPool {
           const canUseWorker: WorkerWrapper[] = [];
           //debugger
           for (const worker of this.pool) {
-            if ((worker.status = StatusEnum.WAITING)) {
+            if ((worker.status === StatusEnum.WAITING)) {
               canUseWorker.push(worker);
               if (canUseWorker.length === currTaskCount) {
                 break;
               }
             }
           }
+          // if(canUseWorker.length===0){
+          //   return
+          // }
           const paramsToRun = workerParams.splice(0, currTaskCount)
           this.currentRunningCount.next(this.currentRunningCount.value+currTaskCount)
           canUseWorker.forEach((worker,index)=>{
             const param=paramsToRun[index];
             worker.run(param.data,params,param.index).then((res)=>{
-              this.results[index]=res;
+              const {content,index1}=res;
+              console.log(content,index1);
+              
+              this.results[index1]=content;
             }).catch((err)=>{
-              this.results[index]=err;
+              this.results[index1]=err;
             }).finally(()=>{
               this.currentRunningCount.next(this.currentRunningCount.value-1);
             })  
           })
         }
-        if(this.currentRunningCount.value<=0&&workerParams.length===0){
+        if(this.currentRunningCount.value==0&&workerParams.length===0){
+          
           rs(this.results);
         }
       });

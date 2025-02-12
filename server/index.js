@@ -80,7 +80,8 @@ app.get('/verify/:filename',async(req,res,next)=>{
 
 app.post('/demo',async(req,res,next)=>{
     //debugger
-    console.log('触发demo',req);
+    console.log('触发demo',req.query);
+    res.json({success:true})
 })
 function pipeStream(rs,ws){
     return new Promise((resolve,reject)=>{

@@ -27,6 +27,8 @@ class PromisePool {
                     const {fn,index}=task;
                     fn().then((res)=>{
                         this.results[index]=res;
+                        console.log(111);
+                        
                     }).catch(err=>{
                         this.results[index]=err;
                     }).finally(()=>{
@@ -44,3 +46,8 @@ class PromisePool {
 }
 
 export {PromisePool}
+
+
+
+
+

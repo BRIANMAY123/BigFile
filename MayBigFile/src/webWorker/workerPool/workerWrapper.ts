@@ -26,13 +26,14 @@ class WorkerWrapper{
                 if(label===workerLabel.DONE&&content){
                     params[index]=content.chunk;
                     this.status = StatusEnum.WAITING
-                    console.log(111);
-                    //debugger
-                    res(content.result)
+                    console.log(content.result);
+                    
+                    res({content:content.result,index1:index})
                 }
             }
             this.worker.onerror=(e)=>{
                 this.status=StatusEnum.WAITING;
+                console.error('worker error')
                 rej(e)
             }
             //debugger

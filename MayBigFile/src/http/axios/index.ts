@@ -3,8 +3,8 @@ import axios, { AxiosRequestConfig } from "axios"
 
 
 const baseConfig={
-    baseURL: '/api',
-    timeout:20000
+    baseURL: 'http://localhost:8080',
+    //timeout:20000
 }
 
 const instance=axios.create(baseConfig);
