@@ -26,6 +26,7 @@ app.use(express.urlencoded({extended:true}))
 app.use(express.static(PUBLIC_DIR))
 
 app.post('/upload/:filename',async (req,res,next)=>{
+    //debugger
     const {filename}=req.params;
     const {chunkFileName}=req.query;
     const start=isNaN(req.query.start)?0:parseInt(req.query.start,10)
@@ -81,6 +82,11 @@ app.get('/verify/:filename',async(req,res,next)=>{
 app.post('/demo',async(req,res,next)=>{
     //debugger
     console.log('触发demo',req.query);
+    debugger
+    const start=req.query.start;
+    const a=req.body
+    console.log(a);
+    debugger
     res.json({success:true})
 })
 function pipeStream(rs,ws){
